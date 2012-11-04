@@ -20,8 +20,8 @@ namespace DownloadManager
     public partial class App : Application
     {
         // The static ViewModel, to be used across the application.
-        private static TransferViewModel<DownloadTransfer> _TransferViewModel;
-        public static TransferViewModel<DownloadTransfer> TransferViewModel
+        private static TransferViewModel<AbstractTransfer> _TransferViewModel;
+        public static TransferViewModel<AbstractTransfer> TransferViewModel
         {
             get { return _TransferViewModel; }
         }
@@ -74,20 +74,20 @@ namespace DownloadManager
             }
 
             // Specify the local database connection string.
-            string DBConnectionString = "Data Source=isostore:/Library.sdf";
+            string DBConnectionString = "Data Source=isostore:/Transfer.sdf";
 
             // Create the database if it does not exist.
-            using (TransferDataContext<DownloadTransfer> db = new TransferDataContext<DownloadTransfer>(DBConnectionString))
+            using (TransferDataContext<AbstractTransfer> db = new TransferDataContext<AbstractTransfer>(DBConnectionString))
             {
                 if (db.DatabaseExists() == false)
                 {
                     // Create the local database.
                     db.CreateDatabase();
 
-                    DownloadTransfer Page = new DownloadTransfer { TransferUrl = @"http://www.cfa.harvard.edu/image_archive/2009/1/hires.jpg", Path = "/space", Filename = "milky_way_highres.jpg" };
+                    AbstractTransfer MilkyWay = new DownloadTransfer { TransferUrl = @"http://www.cfa.harvard.edu/image_archive/2009/1/hires.jpg", Path = "/space", Filename = "milky_way_highres.jpg" };
 
                     // Prepopulate with a page
-                    db.Transfers.InsertOnSubmit(Page);
+                    db.Transfers.InsertOnSubmit(MilkyWay);
 
                     // Save pages to the database.
                     db.SubmitChanges();
@@ -95,7 +95,7 @@ namespace DownloadManager
             }
 
             // Create the ViewModel object.
-            _TransferViewModel = new TransferViewModel<DownloadTransfer>(DBConnectionString);
+            _TransferViewModel = new TransferViewModel<AbstractTransfer>(DBConnectionString);
 
             // Query the local database and load observable collections.
             _TransferViewModel.LoadCollectionsFromDatabase();

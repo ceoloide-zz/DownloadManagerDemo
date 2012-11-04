@@ -25,9 +25,9 @@ namespace DownloadManager
         {
             try
             {
-                Library.Page Page = new Library.Page { TransferUrl = Source.Text, Path = Path.Text, Filename = Filename.Text };
+                AbstractTransfer Transfer = new DownloadTransfer { TransferUrl = Source.Text, Path = Path.Text, Filename = Filename.Text };
 
-                App.TransferViewModel.Add(Page);
+                App.TransferViewModel.Add(Transfer);
 
                 if (NavigationService.CanGoBack)
                 {

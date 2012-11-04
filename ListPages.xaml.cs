@@ -124,7 +124,7 @@ namespace DownloadManager
         private void TransferTap_Handler(object sender, RoutedEventArgs e)
         {
             var Tag = ((FrameworkElement)sender).Tag;
-            DownloadTransfer Page = (DownloadTransfer)App.TransferViewModel.FindByTag(Tag.ToString());
+            AbstractTransfer Page = (AbstractTransfer)App.TransferViewModel.FindByTag(Tag.ToString());
 
             object item = ((FrameworkElement)sender).DataContext;
 
@@ -273,10 +273,10 @@ namespace DownloadManager
 
         private void AppBarButton_StartSelected_Handler(object sender, EventArgs e)
         {
-            DownloadTransfer[] SelectedItems = new DownloadTransfer[CurrentMultiselectList.SelectedItems.Count];
+            AbstractTransfer[] SelectedItems = new AbstractTransfer[CurrentMultiselectList.SelectedItems.Count];
             CurrentMultiselectList.SelectedItems.CopyTo(SelectedItems, 0);
 
-            foreach (DownloadTransfer SelectedItem in SelectedItems)
+            foreach (AbstractTransfer SelectedItem in SelectedItems)
             {
                 StartTransfer(SelectedItem);
             }
@@ -286,10 +286,10 @@ namespace DownloadManager
 
         private void AppBarButton_StopSelected_Handler(object sender, EventArgs e)
         {
-            DownloadTransfer[] SelectedItems = new DownloadTransfer[CurrentMultiselectList.SelectedItems.Count];
+            AbstractTransfer[] SelectedItems = new AbstractTransfer[CurrentMultiselectList.SelectedItems.Count];
             CurrentMultiselectList.SelectedItems.CopyTo(SelectedItems, 0);
 
-            foreach (DownloadTransfer SelectedItem in SelectedItems)
+            foreach (AbstractTransfer SelectedItem in SelectedItems)
             {
                 StopTransfer(SelectedItem);
             }
@@ -301,11 +301,11 @@ namespace DownloadManager
         {
             if (MessageBox.Show(AppResources.WarningMessage_remove_selected, AppResources.WarningTitle_remove_selected, MessageBoxButton.OKCancel) == MessageBoxResult.OK)
             {
-                DownloadTransfer[] SelectedItems = new DownloadTransfer[CurrentMultiselectList.SelectedItems.Count];
+                AbstractTransfer[] SelectedItems = new AbstractTransfer[CurrentMultiselectList.SelectedItems.Count];
                 CurrentMultiselectList.SelectedItems.CopyTo(SelectedItems, 0);
 
                 // User confirmed
-                foreach (DownloadTransfer SelectedItem in SelectedItems)
+                foreach (AbstractTransfer SelectedItem in SelectedItems)
                 {
                     RemoveTransfer(SelectedItem);
                 }
@@ -323,7 +323,7 @@ namespace DownloadManager
         private void ContextMenu_StartTransfer_Handler(object sender, RoutedEventArgs e)
         {
             var Tag = ((FrameworkElement)sender).Tag;
-            DownloadTransfer Page = (DownloadTransfer)App.TransferViewModel.FindByTag(Tag.ToString());
+            AbstractTransfer Page = (AbstractTransfer)App.TransferViewModel.FindByTag(Tag.ToString());
 
             StartTransfer(Page);
         }
@@ -331,7 +331,7 @@ namespace DownloadManager
         private void ContextMenu_StopTransfer_Handler(object sender, RoutedEventArgs e)
         {
             var Tag = ((FrameworkElement)sender).Tag;
-            DownloadTransfer Page = (DownloadTransfer)App.TransferViewModel.FindByTag(Tag.ToString());
+            AbstractTransfer Page = (AbstractTransfer)App.TransferViewModel.FindByTag(Tag.ToString());
 
             App.TransferManager.Cancel(Page);
         }
@@ -339,7 +339,7 @@ namespace DownloadManager
         private void ContextMenu_RemoveTransfer_Handler(object sender, RoutedEventArgs e)
         {
             var Tag = ((FrameworkElement)sender).Tag;
-            DownloadTransfer Page = (DownloadTransfer)App.TransferViewModel.FindByTag(Tag.ToString());
+            AbstractTransfer Page = (AbstractTransfer)App.TransferViewModel.FindByTag(Tag.ToString());
 
             if (MessageBox.Show(AppResources.WarningMessage_remove_single, AppResources.WarningTitle_remove_single, MessageBoxButton.OKCancel) == MessageBoxResult.OK)
             {
@@ -370,7 +370,7 @@ namespace DownloadManager
 
         private void Menu_StartAll_Handler(object sender, EventArgs e)
         {
-            foreach (DownloadTransfer Page in App.TransferViewModel.PendingTransfers)
+            foreach (AbstractTransfer Page in App.TransferViewModel.PendingTransfers)
             {
                 StartTransfer(Page);
             }
@@ -386,7 +386,7 @@ namespace DownloadManager
         {
             if (MessageBox.Show(AppResources.WarningMessage_remove_all, AppResources.WarningTitle_remove_all, MessageBoxButton.OKCancel) == MessageBoxResult.OK)
             {
-                foreach (DownloadTransfer Page in App.TransferViewModel.AllTransfers)
+                foreach (AbstractTransfer Page in App.TransferViewModel.AllTransfers)
                 {
                     RemoveTransfer(Page);
                 }
@@ -489,7 +489,7 @@ namespace DownloadManager
         }
 
         /// <summary>
-        /// This method starts a PersistedDownloadTransfer object if the transfer is either:
+        /// This method starts a PersistedPersistedDownloadTransfer object if the transfer is either:
         ///  - Completed
         ///  - Canceled
         ///  - Failed on the server
@@ -497,7 +497,7 @@ namespace DownloadManager
         ///  - Not yet stated (no status)
         /// </summary>
         /// <param name="Transfer"></param>
-        private void StartTransfer(DownloadTransfer Transfer)
+        private void StartTransfer(AbstractTransfer Transfer)
         {
             if (Transfer.TransferStatus == ExtendedTransferStatus.Completed
                     || Transfer.TransferStatus == ExtendedTransferStatus.Canceled
@@ -510,22 +510,22 @@ namespace DownloadManager
         }
 
         /// <summary>
-        /// This method stops the transfer of a PersistedDownloadTransfer object.
+        /// This method stops the transfer of a PersistedPersistedDownloadTransfer object.
         /// </summary>
         /// <param name="Transfer"></param>
-        private void StopTransfer(DownloadTransfer Transfer)
+        private void StopTransfer(AbstractTransfer Transfer)
         {
             App.TransferManager.Cancel(Transfer);
         }
 
         /// <summary>
-        /// This method removes a PersistedDownloadTransfer object from the ViewModel and cancels
+        /// This method removes a PersistedPersistedDownloadTransfer object from the ViewModel and cancels
         /// its transfer.
         /// 
         /// WARNING: You should ask for confirmation to the user BEFORE calling this method.
         /// </summary>
         /// <param name="Transfer"></param>
-        private void RemoveTransfer(DownloadTransfer Transfer)
+        private void RemoveTransfer(AbstractTransfer Transfer)
         {
             App.TransferViewModel.Remove(Transfer);
             App.TransferManager.Cancel(Transfer);

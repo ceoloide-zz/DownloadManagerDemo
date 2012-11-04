@@ -85,6 +85,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Library\LibraryDataContext.cs" />
+    <Compile Include="Library\LibraryViewModel.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -95,7 +97,6 @@
     <Compile Include="ListPages.xaml.cs">
       <DependentUpon>ListPages.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PersistedDownloadTransfer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\AppResources.it-IT.Designer.cs">
       <AutoGen>True</AutoGen>
