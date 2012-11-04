@@ -6,11 +6,11 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Download Manager")]
-[assembly: AssemblyDescription("The demo application for the Download Manager")]
+[assembly: AssemblyTitle("Transfer Manager Demo")]
+[assembly: AssemblyDescription("The demo application for the Transfer Manager")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("DownloadManager")]
+[assembly: AssemblyCompany("Marco Massarelli")]
+[assembly: AssemblyProduct("TransferManagerDemo")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -85,6 +85,15 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BasicDemo\AddDownload.xaml.cs">
+      <DependentUpon>AddDownload.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BasicDemo\TransferList.xaml.cs">
+      <DependentUpon>TransferList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BasicDemo\TransferSelection.xaml.cs">
+      <DependentUpon>TransferSelection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Library\LibraryDataContext.cs" />
     <Compile Include="Library\LibraryViewModel.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
@@ -104,6 +113,9 @@
       <DependentUpon>AppResources.it-IT.resx</DependentUpon>
     </Compile>
     <Compile Include="Resources\LocalizedStrings.cs" />
+    <Compile Include="StartPage.xaml.cs">
+      <DependentUpon>StartPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewPage.xaml.cs">
       <DependentUpon>ViewPage.xaml</DependentUpon>
     </Compile>
@@ -117,7 +129,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="BasicDemo\AddDownload.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BasicDemo\TransferList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BasicDemo\TransferSelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ListPages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StartPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,0 +1,89 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="DownloadManager.BasicDemo.TransferList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:converters="clr-namespace:DownloadManager.Converters"
+    xmlns:resources="clr-namespace:DownloadManager.Resources"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="True">
+
+    <phone:PhoneApplicationPage.Resources>
+        <resources:LocalizedStrings x:Key="LocalizedStrings" />
+        <converters:TransferStatusToStopVisibility x:Key="TransferStatusToStopVisibility"/>
+        <converters:TransferStatusToStartVisibility x:Key="TransferStatusToStartVisibility"/>
+        <converters:TransferStatusToStartText x:Key="TransferStatusToStartText"/>
+        <converters:TransferStatusToProgressText x:Key="TransferStatusToProgressText"/>
+        <converters:DoubleToPercentageString x:Key="DoubleToPercentageString"/>
+        <converters:TransferStatusToPercentageVisibility x:Key="TransferStatusToPercentageVisibility"/>
+        <converters:IndeterminateTransferToBackgroundBrush x:Key="IndeterminateTransferToBackgroundBrush"/>
+        <DataTemplate x:Key="MultiselectListDownloadItemTemplate">
+            <Grid Width="480" Margin="0" Background="{StaticResource TransparentBrush}" Tap="TransferTap_Handler" Tag="{Binding UID}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <toolkit:ContextMenuService.ContextMenu>
+                    <toolkit:ContextMenu>
+                        <toolkit:MenuItem Header="{Binding Path=LocalizedResources.Common_stop, Source={StaticResource LocalizedStrings}}" Tag="{Binding UID}" Visibility="{Binding Path=TransferStatus, Converter={StaticResource TransferStatusToStopVisibility}}" Click="ContextMenu_StopTransfer_Handler" />
+                        <toolkit:MenuItem Header="{Binding Path=TransferStatus, Converter={StaticResource TransferStatusToStartText}}" Tag="{Binding UID}" Visibility="{Binding Path=TransferStatus, Converter={StaticResource TransferStatusToStartVisibility}}" Click="ContextMenu_StartTransfer_Handler" />
+                        <toolkit:MenuItem Header="{Binding Path=LocalizedResources.Common_remove, Source={StaticResource LocalizedStrings}}" Tag="{Binding UID}" Click="ContextMenu_RemoveTransfer_Handler" />
+                    </toolkit:ContextMenu>
+                </toolkit:ContextMenuService.ContextMenu>
+
+                <Rectangle Grid.Column="0" Fill="{StaticResource PhoneAccentBrush}" Width="99" Height="99" Margin="0" />
+                <StackPanel Grid.Column="1" Background="{StaticResource TransparentBrush}">
+                    <TextBlock Text="{Binding Filename}" Style="{StaticResource PhoneTextExtraLargeStyle}" Margin="15,-15,0,0" />
+                    <ProgressBar Value="{Binding TransferProgress}" Minimum="0" Maximum="1" Margin="16,19,106,0" Padding="0" Background="{Binding Path=IsIndeterminateTransfer, Converter={StaticResource IndeterminateTransferToBackgroundBrush}}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0">
+                        <TextBlock Text="{Binding Path=TransferStatus, Converter={StaticResource TransferStatusToProgressText}}" Style="{StaticResource PhoneTextBlockBase}" FontSize="13" FontFamily="{StaticResource PhoneFontFamilyNormal}" Margin="16,2,0,0" />
+                        <TextBlock Text="{Binding Path=TransferProgress, Converter={StaticResource DoubleToPercentageString}}" Style="{StaticResource PhoneTextBlockBase}" FontSize="13" FontFamily="{StaticResource PhoneFontFamilyNormal}" Visibility="{Binding Path=TransferStatus, Converter={StaticResource TransferStatusToPercentageVisibility}}" Margin="3,2,0,0" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </phone:PhoneApplicationPage.Resources>
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <toolkit:LockablePivot Name="pivot" Title="BASIC DOWNLOAD / UPLOAD DEMO" LoadingPivotItem="pivot_LoadingPivotItem">
+
+            <controls:PivotItem Name="DownloadsPivotItem" Header="{Binding Path=LocalizedResources.CommonTitles_Downloads, Source={StaticResource LocalizedStrings}}" Margin="0">
+                <toolkit:MultiselectList Name="DownloadsMultiselectList" Margin="0,51,0,0"  ItemTemplate="{StaticResource MultiselectListDownloadItemTemplate}" toolkit:TiltEffect.IsTiltEnabled="True"
+                                         SelectionChanged="MultiselectList_SelectionChanged" IsSelectionEnabledChanged="MultiselectListList_IsSelectionEnabledChanged">
+                    <toolkit:MultiselectList.ItemContainerStyle>
+                        <Style TargetType="toolkit:MultiselectItem">
+                            <Setter Property="Margin" Value="0,11"/>
+                        </Style>
+                    </toolkit:MultiselectList.ItemContainerStyle>
+                </toolkit:MultiselectList>
+            </controls:PivotItem>
+            <controls:PivotItem Name="ArchivePivotItem" Header="{Binding Path=LocalizedResources.CommonTitles_Archive, Source={StaticResource LocalizedStrings}}" Margin="0">
+                <toolkit:MultiselectList Name="ArchiveMultiselectList" Margin="0,51,0,0"  ItemTemplate="{StaticResource MultiselectListDownloadItemTemplate}" toolkit:TiltEffect.IsTiltEnabled="True"
+                                         SelectionChanged="MultiselectList_SelectionChanged" IsSelectionEnabledChanged="MultiselectListList_IsSelectionEnabledChanged">
+                    <toolkit:MultiselectList.ItemContainerStyle>
+                        <Style TargetType="toolkit:MultiselectItem">
+                            <Setter Property="Margin" Value="0,11"/>
+                        </Style>
+                    </toolkit:MultiselectList.ItemContainerStyle>
+                </toolkit:MultiselectList>
+            </controls:PivotItem>
+        </toolkit:LockablePivot>
+    </Grid>
+
+    <!--Sample code showing usage of ApplicationBar-->
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" />
+    </phone:PhoneApplicationPage.ApplicationBar>
+
+</phone:PhoneApplicationPage>
