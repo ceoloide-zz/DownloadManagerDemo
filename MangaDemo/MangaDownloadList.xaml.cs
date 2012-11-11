@@ -18,9 +18,9 @@ using System.ComponentModel;
 using Microsoft.Phone.Shell;
 using DownloadManager.Resources;
 
-namespace DownloadManager.BasicDemo
+namespace DownloadManager.MangaDemo
 {
-    public partial class TransferList : PhoneApplicationPage
+    public partial class MangaDownloadList : PhoneApplicationPage
     {
 
         ApplicationBarIconButton AppBarButton_Add;
@@ -37,7 +37,7 @@ namespace DownloadManager.BasicDemo
 
         MultiselectList CurrentMultiselectList;
 
-        public TransferList()
+        public MangaDownloadList()
         {
             InitializeComponent();
 
@@ -106,8 +106,8 @@ namespace DownloadManager.BasicDemo
             #endregion
 
             #region Initialize multiselect lists
-            DownloadsMultiselectList.ItemsSource = App.TransferViewModel.PendingTransfers;
-            ArchiveMultiselectList.ItemsSource = App.TransferViewModel.CompletedTransfers;
+            DownloadsMultiselectList.ItemsSource = App.LibraryViewModel.PendingPages;
+            ArchiveMultiselectList.ItemsSource = App.LibraryViewModel.DownloadedPages;
             #endregion
         }
 
@@ -124,7 +124,7 @@ namespace DownloadManager.BasicDemo
         private void TransferTap_Handler(object sender, RoutedEventArgs e)
         {
             var Tag = ((FrameworkElement)sender).Tag;
-            AbstractTransfer Page = (AbstractTransfer)App.TransferViewModel.FindByTag(Tag.ToString());
+            Library.Page Page = App.LibraryViewModel.FindByUID(Tag.ToString());
 
             object item = ((FrameworkElement)sender).DataContext;
 
@@ -139,49 +139,49 @@ namespace DownloadManager.BasicDemo
             else
             {
                 #region Display message based on transfer status or open preview page
-                switch (Page.TransferStatus)
+                switch (Page.Transfer.TransferStatus)
                 {
                     case ExtendedTransferStatus.None:
-                        MessageBox.Show(AppResources.TapMessage_None, Page.Filename, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.TapMessage_None, Page.Name, MessageBoxButton.OK);
                         break;
                     case ExtendedTransferStatus.Queued:
-                        MessageBox.Show(AppResources.TapMessage_Queued, Page.Filename, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.TapMessage_Queued, Page.Name, MessageBoxButton.OK);
                         break;
                     case ExtendedTransferStatus.Transferring:
-                        MessageBox.Show(AppResources.TapMessage_Transferring, Page.Filename, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.TapMessage_Transferring, Page.Name, MessageBoxButton.OK);
                         break;
                     case ExtendedTransferStatus.Waiting:
-                        MessageBox.Show(AppResources.TapMessage_Waiting, Page.Filename, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.TapMessage_Waiting, Page.Name, MessageBoxButton.OK);
                         break;
                     case ExtendedTransferStatus.WaitingForRetry:
-                        MessageBox.Show(AppResources.TapMessage_WaitingForRetry, Page.Filename, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.TapMessage_WaitingForRetry, Page.Name, MessageBoxButton.OK);
                         break;
                     case ExtendedTransferStatus.WaitingForWiFi:
-                        MessageBox.Show(AppResources.TapMessage_WaitingForWiFi, Page.Filename, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.TapMessage_WaitingForWiFi, Page.Name, MessageBoxButton.OK);
                         break;
                     case ExtendedTransferStatus.WaitingForExternalPower:
-                        MessageBox.Show(AppResources.TapMessage_WaitingForExternalPower, Page.Filename, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.TapMessage_WaitingForExternalPower, Page.Name, MessageBoxButton.OK);
                         break;
                     case ExtendedTransferStatus.WaitingForExternalPowerDueToBatterySaverMode:
-                        MessageBox.Show(AppResources.TapMessage_WaitingForExternalPowerDueToBatterySaverMode, Page.Filename, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.TapMessage_WaitingForExternalPowerDueToBatterySaverMode, Page.Name, MessageBoxButton.OK);
                         break;
                     case ExtendedTransferStatus.WaitingForNonVoiceBlockingNetwork:
-                        MessageBox.Show(AppResources.TapMessage_WaitingForNonVoiceBlockingNetwork, Page.Filename, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.TapMessage_WaitingForNonVoiceBlockingNetwork, Page.Name, MessageBoxButton.OK);
                         break;
                     case ExtendedTransferStatus.Paused:
-                        MessageBox.Show(AppResources.TapMessage_Paused, Page.Filename, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.TapMessage_Paused, Page.Name, MessageBoxButton.OK);
                         break;
                     case ExtendedTransferStatus.Completed:
-                        NavigationService.Navigate(new Uri("/ViewPage.xaml?pid=" + Page.UID, UriKind.Relative));
+                        NavigationService.Navigate(new Uri("/MangaDemo/ViewMangaPage.xaml?pid=" + Page.UID, UriKind.Relative));
                         break;
                     case ExtendedTransferStatus.Failed:
-                        MessageBox.Show(AppResources.TapMessage_Failed, Page.Filename, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.TapMessage_Failed, Page.Name, MessageBoxButton.OK);
                         break;
                     case ExtendedTransferStatus.FailedServer:
-                        MessageBox.Show(AppResources.TapMessage_FailedServer, Page.Filename, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.TapMessage_FailedServer, Page.Name, MessageBoxButton.OK);
                         break;
                     case ExtendedTransferStatus.Canceled:
-                        MessageBox.Show(AppResources.TapMessage_Canceled, Page.Filename, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.TapMessage_Canceled, Page.Name, MessageBoxButton.OK);
                         break;
                 }
                 #endregion
@@ -192,7 +192,7 @@ namespace DownloadManager.BasicDemo
 
         private void AppBarButton_Add_Handler(object sender, EventArgs e)
         {
-            NavigationService.Navigate(new Uri("/BasicDemo/TransferSelection.xaml", UriKind.RelativeOrAbsolute));
+            NavigationService.Navigate(new Uri("/MangaDemo/MangaList.xaml", UriKind.RelativeOrAbsolute));
         }
 
         private void AppBarButton_Select_Handler(object sender, EventArgs e)
@@ -273,12 +273,12 @@ namespace DownloadManager.BasicDemo
 
         private void AppBarButton_StartSelected_Handler(object sender, EventArgs e)
         {
-            AbstractTransfer[] SelectedItems = new AbstractTransfer[CurrentMultiselectList.SelectedItems.Count];
+            Library.Page[] SelectedItems = new Library.Page[CurrentMultiselectList.SelectedItems.Count];
             CurrentMultiselectList.SelectedItems.CopyTo(SelectedItems, 0);
 
-            foreach (AbstractTransfer SelectedItem in SelectedItems)
+            foreach (Library.Page SelectedItem in SelectedItems)
             {
-                StartTransfer(SelectedItem);
+                StartTransfer(SelectedItem.Transfer);
             }
 
             CurrentMultiselectList.IsSelectionEnabled = false;
@@ -286,12 +286,12 @@ namespace DownloadManager.BasicDemo
 
         private void AppBarButton_StopSelected_Handler(object sender, EventArgs e)
         {
-            AbstractTransfer[] SelectedItems = new AbstractTransfer[CurrentMultiselectList.SelectedItems.Count];
+            Library.Page[] SelectedItems = new Library.Page[CurrentMultiselectList.SelectedItems.Count];
             CurrentMultiselectList.SelectedItems.CopyTo(SelectedItems, 0);
 
-            foreach (AbstractTransfer SelectedItem in SelectedItems)
+            foreach (Library.Page SelectedItem in SelectedItems)
             {
-                StopTransfer(SelectedItem);
+                StopTransfer(SelectedItem.Transfer);
             }
 
             CurrentMultiselectList.IsSelectionEnabled = false;
@@ -301,13 +301,14 @@ namespace DownloadManager.BasicDemo
         {
             if (MessageBox.Show(AppResources.WarningMessage_remove_selected, AppResources.WarningTitle_remove_selected, MessageBoxButton.OKCancel) == MessageBoxResult.OK)
             {
-                AbstractTransfer[] SelectedItems = new AbstractTransfer[CurrentMultiselectList.SelectedItems.Count];
+                Library.Page[] SelectedItems = new Library.Page[CurrentMultiselectList.SelectedItems.Count];
                 CurrentMultiselectList.SelectedItems.CopyTo(SelectedItems, 0);
 
                 // User confirmed
-                foreach (AbstractTransfer SelectedItem in SelectedItems)
+                foreach (Library.Page SelectedItem in SelectedItems)
                 {
-                    RemoveTransfer(SelectedItem);
+                    RemoveTransfer(SelectedItem.Transfer);
+                    RemovePage(SelectedItem);
                 }
 
                 CurrentMultiselectList.IsSelectionEnabled = false;
@@ -323,28 +324,29 @@ namespace DownloadManager.BasicDemo
         private void ContextMenu_StartTransfer_Handler(object sender, RoutedEventArgs e)
         {
             var Tag = ((FrameworkElement)sender).Tag;
-            AbstractTransfer Page = (AbstractTransfer)App.TransferViewModel.FindByTag(Tag.ToString());
+            Library.Page Page = (Library.Page)App.LibraryViewModel.FindByUID(Tag.ToString());
 
-            StartTransfer(Page);
+            StartTransfer(Page.Transfer);
         }
 
         private void ContextMenu_StopTransfer_Handler(object sender, RoutedEventArgs e)
         {
             var Tag = ((FrameworkElement)sender).Tag;
-            AbstractTransfer Page = (AbstractTransfer)App.TransferViewModel.FindByTag(Tag.ToString());
+            Library.Page Page = (Library.Page)App.LibraryViewModel.FindByUID(Tag.ToString());
 
-            StopTransfer(Page);
+            StopTransfer(Page.Transfer);
         }
 
         private void ContextMenu_RemoveTransfer_Handler(object sender, RoutedEventArgs e)
         {
             var Tag = ((FrameworkElement)sender).Tag;
-            AbstractTransfer Page = (AbstractTransfer)App.TransferViewModel.FindByTag(Tag.ToString());
+            Library.Page Page = (Library.Page)App.LibraryViewModel.FindByUID(Tag.ToString());
 
             if (MessageBox.Show(AppResources.WarningMessage_remove_single, AppResources.WarningTitle_remove_single, MessageBoxButton.OKCancel) == MessageBoxResult.OK)
             {
                 // User confirmed
-                RemoveTransfer(Page);
+                RemoveTransfer(Page.Transfer);
+                RemovePage(Page);
             }
         }
 
@@ -369,15 +371,18 @@ namespace DownloadManager.BasicDemo
 
         private void Menu_StartAll_Handler(object sender, EventArgs e)
         {
-            foreach (AbstractTransfer Page in App.TransferViewModel.PendingTransfers)
+            foreach (Library.Page Page in App.LibraryViewModel.AllPages)
             {
-                StartTransfer(Page);
+                StartTransfer(Page.Transfer);
             }
         }
 
         private void Menu_StopAll_Handler(object sender, EventArgs e)
         {
-            App.TransferManager.CancelAll();
+            foreach (Library.Page Page in App.LibraryViewModel.AllPages)
+            {
+                StopTransfer(Page.Transfer);
+            }
         }
 
 
@@ -385,11 +390,12 @@ namespace DownloadManager.BasicDemo
         {
             if (MessageBox.Show(AppResources.WarningMessage_remove_all, AppResources.WarningTitle_remove_all, MessageBoxButton.OKCancel) == MessageBoxResult.OK)
             {
-                List<AbstractTransfer> AllTransfers = App.TransferViewModel.AllTransfers.ToList<AbstractTransfer>();
+                List<Library.Page> AllItems = App.LibraryViewModel.AllPages.ToList<Library.Page>();
 
-                foreach (AbstractTransfer Page in AllTransfers)
+                foreach (Library.Page Page in AllItems)
                 {
-                    RemoveTransfer(Page);
+                    RemoveTransfer(Page.Transfer);
+                    RemovePage(Page);
                 }
             }
         }
@@ -460,6 +466,18 @@ namespace DownloadManager.BasicDemo
         {
             App.TransferViewModel.Remove(Transfer);
             App.TransferManager.Cancel(Transfer);
+        }
+
+        /// <summary>
+        /// This method removes a Libarry.Page object from the ViewModel and cancels
+        /// its transfer.
+        /// 
+        /// WARNING: You should ask for confirmation to the user BEFORE calling this method.
+        /// </summary>
+        /// <param name="Transfer"></param>
+        private void RemovePage(Library.Page SelectedItem)
+        {
+            App.LibraryViewModel.Remove(SelectedItem);
         }
 
         #endregion

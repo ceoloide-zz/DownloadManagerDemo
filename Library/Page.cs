@@ -52,11 +52,6 @@ namespace DownloadManager.Library
             _Name = "No name";
         }
 
-        public Page(string DisplayName)
-        {
-            _Name = DisplayName;
-        }
-
         private int _UID;
         /// <summary>
         /// Gets or sets the unique ID of the transfer.

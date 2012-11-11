@@ -19,6 +19,13 @@ namespace DownloadManager
 {
     public partial class App : Application
     {
+        // The static LibraryViewModel, to be used across the application.
+        private static LibraryViewModel _LibraryViewModel;
+        public static LibraryViewModel LibraryViewModel
+        {
+            get { return _LibraryViewModel; }
+        }
+
         // The static ViewModel, to be used across the application.
         private static TransferViewModel<AbstractTransfer> _TransferViewModel;
         public static TransferViewModel<AbstractTransfer> TransferViewModel
@@ -102,6 +109,22 @@ namespace DownloadManager
 
             // Transfer manager
             _TransferManager = new TransferManager.TransferManager(_TransferViewModel);
+
+            // Create the database if it does not yet exist.
+            using (LibraryDataContext db = new LibraryDataContext("isostore:/Library.sdf"))
+            {
+                if (db.DatabaseExists() == false)
+                {
+                    // Create the database.
+                    db.CreateDatabase();
+                }
+            }
+
+            // Create the LibraryViewModel object.
+            _LibraryViewModel = new LibraryViewModel("isostore:/Library.sdf");
+
+            // Query the local database and load observable collections.
+            _LibraryViewModel.LoadCollectionsFromDatabase();
         }
 
         // Code to execute when the application is launching (eg, from Start)

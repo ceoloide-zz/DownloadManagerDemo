@@ -24,7 +24,7 @@ namespace DownloadManager
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-
+            NavigationService.Navigate(new Uri("/MangaDemo/MangaDownloadList.xaml", UriKind.RelativeOrAbsolute));
         }
     }
 }
